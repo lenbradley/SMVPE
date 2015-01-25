@@ -15,7 +15,8 @@
             'www.youtube.com/embed/6FWUjJF1ai0',
             'http://vimeo.com/108498418',
             'player.vimeo.com/video/109485670',
-            'http://www.metacafe.com/watch/11402869/ownage_pranks_cheating_pregnant_girlfriend/',
+            'http://vimeo.com/channels/staffpicks/109485670',
+            'http://www.metacafe.com/watch/11402869/ownage_pranks_cheating_pregnant_girlfriend/?test=1&hello=1324345',
             '//www.metacafe.com/embed/11402869/',
             'http://www.break.com/video/new-terry-crews-old-spice-superbowl-commercial-2810755',
             '//www.break.com/embed/2810755',
@@ -26,11 +27,12 @@
         $smvpe = new SMVPE();
 
         foreach ( $test as $url ) {
-            echo '<pre>';
+
             $smvpe->setSource( $url );
-            echo htmlentities( print_r( $smvpe->source, true ) ) . PHP_EOL;
-            echo htmlentities( print_r( $smvpe->site, true ) ) . PHP_EOL;
-            echo htmlentities( print_r( '---', true ) ) . PHP_EOL;
+
+            echo '<pre>';
+            // echo $smvpe->embed();
+            echo htmlentities( print_r( $smvpe->getEmbedCode(), true ) ) . PHP_EOL;
             echo '</pre>';
         }        
     ?>

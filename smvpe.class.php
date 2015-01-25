@@ -9,7 +9,7 @@
  *
  * @author  Len Bradley <lenbradley@ninesphere.com>
  * @license http://www.php.net/license/3_01.txt PHP License 3.01
- * @version 0.1.0
+ * @version 0.2.0
  */
 
 class SMVPE
@@ -27,20 +27,35 @@ class SMVPE
         $defaults = array(
             'height'    => '480',
             'width'     => '860',
-            'echo'      => false,
             'container' => '<div class="video">%1$s</div>',
-            'class'     => '',
-            'id'        => '',
             'params'    => null
         );
 
         $this->options = array_merge( $defaults, $options );
     }
 
-    public function setSource( $source = '' )
+    public function setOption( $name = '', $value = '' )
+    {
+        if ( trim( $name ) != '' ) {
+            $this->options[$name] == $value;
+        }
+    }
+
+    public function setSource( $source = '', $options = array() )
     {
         $this->source   = $this->validateURL( $source );
         $this->site     = $this->getSourceProvider( $this->source );
+
+        if ( ! empty( $options ) ) {
+            foreach ( $options as $name => $value ) {
+                $this->setOption( $name, $params );
+            }
+        }
+    }
+
+    public function setParameters( $params = '' )
+    {
+        $this->options['params'] = $params;
     }
 
     public function getSites()
@@ -49,32 +64,27 @@ class SMVPE
             'break' => array(
                 'url'   => 'http://www.break.com',
                 'embed' => '//www.break.com/embed/{id}',
-                'data'  => '',
-                'regex' => ''
+                'data'  => ''
             ),
             'dailymotion' => array(
                 'url'   => 'http://www.dailymotion.com',
                 'embed' => '//www.dailymotion.com/embed/video/{id}',
-                'data'  => '//api.dailymotion.com/video/{id}',
-                'regex' => ''
+                'data'  => ''
             ),
             'metacafe' => array(
                 'url'   => 'http://www.metacafe.com',
                 'embed' => '//www.metacafe.com/embed/{id}/',
-                'data'  => '//www.metacafe.com/api/item/{id}/',
-                'regex' => ''
+                'data'  => '//www.metacafe.com/api/item/{id}/'
             ),
             'vimeo' => array(
                 'url'   => 'https://vimeo.com/',
                 'embed' => '//player.vimeo.com/video/{id}',
-                'data'  => '//vimeo.com/api/v2/video/{id}.json',
-                'regex' => ''
+                'data'  => '//vimeo.com/api/v2/video/{id}.json'
             ),
             'youtube' => array(
                 'url'   => 'https://www.youtube.com/',
                 'embed' => '//www.youtube.com/embed/{id}',
-                'data'  => '//gdata.youtube.com/feeds/api/videos/{id}',
-                'regex' => '#^(?:https?://)?(?:www\.)?(?:youtu\.be/|youtube\.com(?:/embed/|/v/|/watch\?v=|/watch\?.+&v=))([\w-]{11})(?:.+)?$#x'
+                'data'  => '//gdata.youtube.com/feeds/api/videos/{id}'
             )
         );
 
@@ -115,6 +125,18 @@ class SMVPE
         return false;
     }
 
+    public function getParametersFromSource( $source = null )
+    {
+        $source = ( $source === null ) ? $this->source : $source;
+        $source = parse_url( $source );        
+
+        if ( isset( $source['query'] ) ) {
+            return $source['query'];
+        }
+
+        return '';
+    }
+
     public function parseParameters( $params = null )
     {
         if ( $params === null ) {
@@ -127,7 +149,7 @@ class SMVPE
 
         if ( is_array( $params ) && ! empty( $params ) ) {
             $params = '?' . http_build_query( $params );
-        }        
+        }
 
         return $params;
     }
@@ -136,25 +158,76 @@ class SMVPE
     {
         $source = ( $source === null ) ? $this->source : $source;
         $site   = ( $site === null ) ? $this->getSourceProvider( $source ) : $site;
+        $parsed = parse_url( $source );
+
+        if ( isset( $parsed['path'] ) ) {
+            $parsed['path'] = trim( $parsed['path'], '/' );
+        }
 
         switch ( $site ) {
             case 'break' :
+                if ( isset( $parsed['path'] ) ) {
+                    $parsed['path'] = explode( '/', $parsed['path'] );
+                    $parsed['path'] = array_pop( $parsed['path'] );
+                    $parsed['path'] = explode( '-', $parsed['path'] );
+                    $parsed['path'] = array_pop( $parsed['path'] );
+
+                    return $parsed['path'];
+                }
 
                 break;
             case 'dailymotion' :
+                if ( isset( $parsed['path'] ) ) {
+                    $parsed['path'] = explode( '/', $parsed['path'] );
+                    $parsed['path'] = array_pop( $parsed['path'] );
+
+                    if ( strpos( $parsed['path'], '_' ) !== false ) {
+                        $parsed['path'] = explode( '_', $parsed['path'] );
+                        $parsed['path'] = $parsed['path'][0];
+                    }
+
+                    return $parsed['path'];
+                }
 
                 break;
             case 'metacafe' :
+                if ( isset( $parsed['path'] ) ) {
+                    $parsed['path'] = explode( '/', $parsed['path'] );
+
+                    if ( isset( $parsed['path'][1] ) ) {
+                        return $parsed['path'][1];
+                    }
+                }
 
                 break;
             case 'vimeo' :
+                if ( isset( $parsed['path'] ) ) {
+                    $parsed['path'] = explode( '/', $parsed['path'] );
+                    $parsed['path'] = array_pop( $parsed['path'] );
+
+                    return $parsed['path'];
+                }
 
                 break;
             case 'youtube' :
+                if ( isset( $parsed['query'] ) ) {
 
+                   parse_str( $parsed['query'], $query );
+
+                    if ( isset( $query['v'] ) ) {
+                        return $query['v'];
+                    }
+                }
+
+                if ( isset( $parsed['path'] ) ) {
+                    $parsed['path'] = explode( '/', $parsed['path'] );
+                    $parsed['path'] = array_pop( $parsed['path'] );
+
+                    return $parsed['path'];
+                }
                 break;
             default :
-                return false;
+                return 0;
         }
     }
 
@@ -173,12 +246,30 @@ class SMVPE
         }
     }
 
+    public function getEmbedCode( $source = null, $site = null )
+    {
+        $source = ( $source === null ) ? $this->source : $source;
+        $site   = ( $site === null ) ? $this->getSourceProvider( $source ) : $site;
+        $sites  = $this->getSites();
+        $output = '';
+
+        if ( isset( $sites[$site] ) && $video_id = $this->extractID() ) {
+            $embed_url = str_replace( '{id}', $video_id, $sites[$site]['embed'] );
+
+            $output = '<iframe src="' . $embed_url . $this->parseParameters() . '" width="' . $this->options['width'] . '" height="' . $this->options['height'] . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+
+            $output = sprintf( $this->options['container'], $output );
+        }
+
+        return $output;
+    }
+
     public function embed( $source = null, $site = null )
     {
         $source = ( $source === null ) ? $this->source : $source;
         $site   = ( $site === null ) ? $this->getSourceProvider( $source ) : $site;
 
-        $output = sprintf( $this->options['container'], $output );
+        echo $this->getEmbedCode( $source, $site );
     }
 }
 
