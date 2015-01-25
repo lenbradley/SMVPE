@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * SMVPE - Social Media Video Parse & Embed
+ *
+ * This class allows you to pass a source url from
+ * a number of social media video wesbites and parse
+ * it in order to embed the video associated with it.
+ *
+ * @author  Len Bradley <lenbradley@ninesphere.com>
+ * @license http://www.php.net/license/3_01.txt PHP License 3.01
+ * @version 0.1.0
+ */
+
 class SMVPE
 {
     public $source, $site, $options;
