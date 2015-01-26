@@ -9,7 +9,7 @@
  *
  * @author  Len Bradley <lenbradley@ninesphere.com>
  * @license http://www.php.net/license/3_01.txt PHP License 3.01
- * @version 0.3.0
+ * @version 1.0.0
  */
 
 class SMVPE
