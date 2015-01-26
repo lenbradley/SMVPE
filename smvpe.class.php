@@ -264,11 +264,9 @@ class SMVPE
         $output = '';
 
         if ( isset( $sites[$site] ) && $video_id = $this->extractID() ) {
-            $embed_url = str_replace( '{id}', $video_id, $sites[$site]['embed'] );
-
-            $output = '<iframe src="' . $embed_url . $this->parseParameters() . '" width="' . $this->options['width'] . '" height="' . $this->options['height'] . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-
-            $output = sprintf( $this->options['container'], $output );
+            $embed_url  = str_replace( '{id}', $video_id, $sites[$site]['embed'] );
+            $output     = '<iframe src="' . $embed_url . $this->parseParameters() . '" width="' . $this->options['width'] . '" height="' . $this->options['height'] . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            $output     = sprintf( $this->options['container'], $output );
         }
 
         return $output;
