@@ -9,7 +9,7 @@
  *
  * @author  Len Bradley <lenbradley@ninesphere.com>
  * @license http://www.php.net/license/3_01.txt PHP License 3.01
- * @version 0.2.0
+ * @version 0.3.0
  */
 
 class SMVPE
@@ -20,7 +20,12 @@ class SMVPE
     {        
         $this->setSource( $source );
         $this->setOptions( $options );
-    }    
+    }
+
+    public static function init( $source = '', $options = array() )
+    {
+        return new SMVPE( $source, $options );
+    }
 
     public function setOptions( $options = array() )
     {
@@ -39,6 +44,8 @@ class SMVPE
         if ( trim( $name ) != '' ) {
             $this->options[$name] == $value;
         }
+
+        return $this;
     }
 
     public function setSource( $source = '', $options = array() )
@@ -51,11 +58,14 @@ class SMVPE
                 $this->setOption( $name, $params );
             }
         }
+
+        return $this;
     }
 
     public function setParameters( $params = '' )
     {
         $this->options['params'] = $params;
+        return $this;
     }
 
     public function getSites()
