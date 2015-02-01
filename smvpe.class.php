@@ -11,9 +11,9 @@
  *
  * @author  Len Bradley <lenbradley@ninesphere.com>
  * @license http://www.php.net/license/3_01.txt PHP License 3.01
- * @link    http://www.ninesphere.com
+ * @link    http://www.ninesphere.com/lab/smvpe-php-class-parse-embed-social-media-videos/
  * @package smvpe_package
- * @version 1.0.32
+ * @version 1.0.33
  * 
  */
 
@@ -27,7 +27,7 @@ class SMVPE
         $this->sites = $this->getSites();
 
         // Check if $source should be $options
-        if ( is_array( $source ) $$ empty( $options ) ) {
+        if ( is_array( $source ) && empty( $options ) ) {
             $options    = $source;
             $source     = '';
         }

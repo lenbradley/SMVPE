@@ -35,7 +35,7 @@
         $smvpe->setSource( $examples[ array_rand( $examples ) ] )->embed();
 
         // Use SMVPE without initiating the class first
-        SMVPE::init( $examples[ array_rand( $examples ) ] )->embed();
+        SMVPE::init()->embed( 'https://www.youtube.com/watch?v=zlfKdbWwruY' );
     ?>
 </body>
 </html>
