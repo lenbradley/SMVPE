@@ -28,7 +28,9 @@
         $smvpe = new SMVPE();
 
         // Pull a random URL and embed it
-        $smvpe->setSource( $examples[ array_rand( $examples ) ] )->embed();
+        $smvpe->setSource( $examples[ array_rand( $examples ) ] );
+        $smvpe->embed();
+
         echo '<pre>' . htmlentities( print_r( $smvpe->getEmbedCode(), true ) ) . '</pre>';
 
         // Use SMVPE without initiating the class first
