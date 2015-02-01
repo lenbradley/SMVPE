@@ -43,95 +43,6 @@ class SMVPE
     }
 
     /**
-     * Sets options for SMVPE Object
-     * 
-     * @param array $options 
-     * @return SMVPE Object
-     */
-    public function setOptions( $options = array() )
-    {
-        if ( empty( $this->options ) ) {
-            $defaults = array(
-                'width'     => '860',
-                'height'    => '480',                
-                'container' => '<div class="video">%1$s</div>',
-                'params'    => null
-            );
-        } else {
-            $defaults = $this->options;
-        }        
-
-        $this->options = array_merge( $defaults, $options );
-
-        return $this;
-    }
-
-    /**
-     * Set or change a single option name => value
-     * 
-     * @param string $name 
-     * @param mixed $value 
-     * @return SMVPE Object
-     */
-    public function setOption( $name = '', $value = '' )
-    {
-        if ( trim( $name ) != '' ) {
-            $this->options[$name] == $value;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Sets the source. Can be used if iterating through multiple sources.
-     * 
-     * @param string $source 
-     * @param array $options 
-     * @return SMVPE Object
-     */
-    public function setSource( $source = '', $options = array() )
-    {
-        $this->source   = $this->validateURL( $source );
-        $this->site     = $this->getSourceProvider( $this->source );
-
-        if ( ! empty( $options ) ) {
-            $this->setOptions( $options );
-        }
-
-        return $this;
-    }
-
-    /**
-     * Sets the source content by video ID and site slug name
-     * @param string $id 
-     * @param string $site 
-     * @return SMVPE Object
-     */
-    public function setSourceByID( $id = '', $site = '' )
-    {
-        $site = (string) strtolower( trim( $site ) );
-
-        if ( trim( $site ) != '' && isset( $this->sites[$site] ) && isset( $this->sites[$site]['embed'] ) ) {
-            $source = $this->insertID( $id, $this->sites[$site]['embed'] );
-            $this->setSource( $source );
-        }
-
-        return $this;
-    }
-
-    /**
-     * Sets the parameters for the video embed
-     * 
-     * @param type $params 
-     * @return type
-     */
-    public function setParameters( $params = '' )
-    {
-        $this->options['params'] = $params;
-        return $this;
-    }
-
-    /**
      * Returns a list of all compatible sites and data
      * associated with site.
      * 
@@ -258,7 +169,98 @@ class SMVPE
     }
 
     /**
+     * Sets options for SMVPE Object
+     * 
+     * @param array $options 
+     * @return SMVPE Object
+     */
+    public function setOptions( $options = array() )
+    {
+        if ( empty( $this->options ) ) {
+            $defaults = array(
+                'width'     => '860',
+                'height'    => '480',                
+                'container' => '<div class="video">%1$s</div>',
+                'params'    => null
+            );
+        } else {
+            $defaults = $this->options;
+        }        
+
+        $this->options = array_merge( $defaults, $options );
+
+        return $this;
+    }
+
+    /**
+     * Set or change a single option name => value
+     * 
+     * @param string $name 
+     * @param mixed $value 
+     * @return SMVPE Object
+     */
+    public function setOption( $name = '', $value = '' )
+    {
+        if ( trim( $name ) != '' ) {
+            $this->options[$name] == $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the source. Can be used if iterating through multiple sources.
+     * 
+     * @param string $source 
+     * @param array $options 
+     * @return SMVPE Object
+     */
+    public function setSource( $source = '', $options = array() )
+    {
+        $this->source   = $this->validateURL( $source );
+        $this->site     = $this->getSourceProvider( $this->source );
+
+        if ( ! empty( $options ) ) {
+            $this->setOptions( $options );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the source content by video ID and site slug name
+     * 
+     * @param string $id 
+     * @param string $site 
+     * @return SMVPE Object
+     */
+    public function setSourceByID( $id = '', $site = '' )
+    {
+        $site = (string) strtolower( trim( $site ) );
+
+        if ( trim( $site ) != '' && isset( $this->sites[$site] ) && isset( $this->sites[$site]['embed'] ) ) {
+            $source = $this->insertID( $id, $this->sites[$site]['embed'] );
+            $this->setSource( $source );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the parameters for the video embed
+     * 
+     * @param type $params 
+     * @return type
+     */
+    public function setParameters( $params = '' )
+    {
+        $this->options['params'] = $params;
+        return $this;
+    }    
+
+    /**
      * Evaluates and validates string as a URL
+     * 
      * @param string $url 
      * @return string
      */
@@ -367,6 +369,7 @@ class SMVPE
 
     /**
      * Fetches and returns data associated with video
+     * 
      * @param string $source 
      * @param string $site 
      * @return mixed
@@ -420,7 +423,8 @@ class SMVPE
     }
 
     /**
-     * Outputs embeded code
+     * Outputs the generated embed code
+     * 
      * @param string $source 
      * @param string $site 
      * @return string
