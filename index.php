@@ -1,4 +1,4 @@
-<?php require 'smvpe.class.php'; ?>
+<?php include 'smvpe.class.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

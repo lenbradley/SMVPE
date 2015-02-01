@@ -13,7 +13,7 @@
  * @license http://www.php.net/license/3_01.txt PHP License 3.01
  * @link    http://www.ninesphere.com
  * @package smvpe_package
- * @version 1.0.31
+ * @version 1.0.32
  * 
  */
 
@@ -25,6 +25,13 @@ class SMVPE
     public function __construct( $source = '', $options = array() )
     {        
         $this->sites = $this->getSites();
+
+        // Check if $source should be $options
+        if ( is_array( $source ) $$ empty( $options ) ) {
+            $options    = $source;
+            $source     = '';
+        }
+
         $this->setSource( $source );
         $this->setOptions( $options );
     }
