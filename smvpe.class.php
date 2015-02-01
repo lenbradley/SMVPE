@@ -13,7 +13,7 @@
  * @license http://www.php.net/license/3_01.txt PHP License 3.01
  * @link    http://www.ninesphere.com
  * @package smvpe_package
- * @version 1.0.2
+ * @version 1.0.3
  * 
  */
 
@@ -96,6 +96,24 @@ class SMVPE
 
         if ( ! empty( $options ) ) {
             $this->setOptions( $options );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the source content by video ID and site slug name
+     * @param string $id 
+     * @param string $site 
+     * @return SMVPE Object
+     */
+    public function setSourceByID( $id = '', $site = '' )
+    {
+        $site = (string) strtolower( trim( $site ) );
+
+        if ( trim( $site ) != '' && isset( $this->sites[$site] ) && isset( $this->sites[$site]['embed'] ) ) {
+            $source = $this->insertID( $id, $this->sites[$site]['embed'] );
+            $this->setSource( $source );
         }
 
         return $this;

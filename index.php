@@ -25,16 +25,17 @@
             '//dailymotion.com/embed/video/x2f9s29'
         );
         
+        // create new empty instance of SMVPE
         $smvpe = new SMVPE();
 
-        // Pull a random URL and embed it
-        $smvpe->setSource( $examples[ array_rand( $examples ) ] );
-        $smvpe->embed();
+        // Set source by video ID and embed using chainable methods
+        $smvpe->setSourceByID( '6FWUjJF1ai0', 'youtube' )->embed();
 
-        echo '<pre>' . htmlentities( print_r( $smvpe->getEmbedCode(), true ) ) . '</pre>';
+        // Pull a random URL from $examples and embed it
+        $smvpe->setSource( $examples[ array_rand( $examples ) ] )->embed();
 
         // Use SMVPE without initiating the class first
-        SMVPE::init( 'youtube.com/embed/6FWUjJF1ai0' )->embed();
+        SMVPE::init( $examples[ array_rand( $examples ) ] )->embed();
     ?>
 </body>
 </html>
