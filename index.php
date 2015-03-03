@@ -32,7 +32,7 @@
         $smvpe->setSourceByID( '6FWUjJF1ai0', 'youtube' )->embed();
 
         // Pull a random URL from $examples and embed it
-        $smvpe->setSource( $examples[ array_rand( $examples ) ] )->embed();
+        // $smvpe->setSource( $examples[ array_rand( $examples ) ] )->embed();
 
         // Use SMVPE without initiating the class first
         SMVPE::init()->embed( 'https://www.youtube.com/watch?v=zlfKdbWwruY' );

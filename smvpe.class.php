@@ -13,7 +13,7 @@
  * @license http://www.php.net/license/3_01.txt PHP License 3.01
  * @link    http://www.ninesphere.com/lab/smvpe-php-class-parse-embed-social-media-videos/
  * @package smvpe_package
- * @version 1.0.33
+ * @version 1.0.34
  * 
  */
 
@@ -407,6 +407,23 @@ class SMVPE
     }
 
     /**
+     * Gets the embed URL
+     * @return string
+     */
+    public function getEmbedURL( $source = null, $site = null )
+    {
+        $source     = ( $source === null ) ? $this->source : $source;
+        $site       = ( $site === null ) ? $this->getSourceProvider( $source ) : $site;
+        $embed_url  = '';
+
+        if ( isset( $this->sites[$site] ) && $video_id = $this->extractID( $source ) ) {
+            $embed_url = $this->insertID( $video_id, $this->sites[$site]['embed'] );
+        }
+
+        return $embed_url;
+    }
+
+    /**
      * Gets the generated embed HTML code
      * 
      * @param string $source 
@@ -419,9 +436,7 @@ class SMVPE
         $site   = ( $site === null ) ? $this->getSourceProvider( $source ) : $site;
         $output = '';
 
-        if ( isset( $this->sites[$site] ) && $video_id = $this->extractID( $source ) ) {
-
-            $embed_url  = $this->insertID( $video_id, $this->sites[$site]['embed'] );
+        if ( $embed_url = $this->getEmbedURL( $source, $site ) ) {
             $output     = '<iframe src="' . $embed_url . $this->parseParameters() . '" width="' . $this->options['width'] . '" height="' . $this->options['height'] . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             $output     = sprintf( $this->options['container'], $output );
         }
