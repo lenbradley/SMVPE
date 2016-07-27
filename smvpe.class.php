@@ -6,15 +6,15 @@
  * This class allows you to pass a source url from
  * a number of social media video wesbites and parse
  * it in order to embed the video associated with it.
- * 
+ *
  * SMVPE requires PHP Version 5.3 or higher.
  *
  * @author  Len Bradley <lenbradley@ninesphere.com>
  * @license http://www.php.net/license/3_01.txt PHP License 3.01
  * @link    http://www.ninesphere.com/lab/smvpe-php-class-parse-embed-social-media-videos/
  * @package smvpe_package
- * @version 1.0.34
- * 
+ * @version 1.0.36
+ *
  */
 
 class SMVPE
@@ -23,7 +23,7 @@ class SMVPE
     protected   $sites;
 
     public function __construct( $source = '', $options = array() )
-    {        
+    {
         $this->sites = $this->getSites();
 
         // Check if $source should be $options
@@ -39,9 +39,9 @@ class SMVPE
     /**
      * Provides a way to access class without initiating a new SMVPE object first.
      * i.e. SMVPE::init( 'youtube.com/embed/6FWUjJF1ai0' )->embed();
-     * 
-     * @param string $source 
-     * @param array $options 
+     *
+     * @param string $source
+     * @param array $options
      * @return SMVPE Object
      */
     public static function init( $source = '', $options = array() )
@@ -52,7 +52,7 @@ class SMVPE
     /**
      * Returns a list of all compatible sites and data
      * associated with site.
-     * 
+     *
      * @return array
      */
     protected function getSites()
@@ -160,10 +160,10 @@ class SMVPE
     }
 
     /**
-     * Searches for and returns a single site. If no site is found 
-     * false will be returned. 
-     * 
-     * @param type $name 
+     * Searches for and returns a single site. If no site is found
+     * false will be returned.
+     *
+     * @param type $name
      * @return array
      */
     protected function getSite( $name )
@@ -177,8 +177,8 @@ class SMVPE
 
     /**
      * Sets options for SMVPE Object
-     * 
-     * @param array $options 
+     *
+     * @param array $options
      * @return SMVPE Object
      */
     public function setOptions( $options = array() )
@@ -186,13 +186,13 @@ class SMVPE
         if ( empty( $this->options ) ) {
             $defaults = array(
                 'width'     => '860',
-                'height'    => '480',                
+                'height'    => '480',
                 'container' => '<div class="video">%1$s</div>',
                 'params'    => null
             );
         } else {
             $defaults = $this->options;
-        }        
+        }
 
         $this->options = array_merge( $defaults, $options );
 
@@ -201,9 +201,9 @@ class SMVPE
 
     /**
      * Set or change a single option name => value
-     * 
-     * @param string $name 
-     * @param mixed $value 
+     *
+     * @param string $name
+     * @param mixed $value
      * @return SMVPE Object
      */
     public function setOption( $name = '', $value = '' )
@@ -217,9 +217,9 @@ class SMVPE
 
     /**
      * Sets the source. Can be used if iterating through multiple sources.
-     * 
-     * @param string $source 
-     * @param array $options 
+     *
+     * @param string $source
+     * @param array $options
      * @return SMVPE Object
      */
     public function setSource( $source = '', $options = array() )
@@ -236,9 +236,9 @@ class SMVPE
 
     /**
      * Sets the source content by video ID and site slug name
-     * 
-     * @param string $id 
-     * @param string $site 
+     *
+     * @param string $id
+     * @param string $site
      * @return SMVPE Object
      */
     public function setSourceByID( $id = '', $site = '' )
@@ -255,20 +255,20 @@ class SMVPE
 
     /**
      * Sets the parameters for the video embed
-     * 
-     * @param type $params 
+     *
+     * @param type $params
      * @return type
      */
     public function setParameters( $params = '' )
     {
         $this->options['params'] = $params;
         return $this;
-    }    
+    }
 
     /**
      * Evaluates and validates string as a URL
-     * 
-     * @param string $url 
+     *
+     * @param string $url
      * @return string
      */
     public function validateURL( $url = '' )
@@ -277,8 +277,8 @@ class SMVPE
 
             $valid_url = false;
 
-            foreach ( array( 'http://', 'https://', '//' ) as $curl_dataeck ) {
-                if ( strtolower( substr( $url, 0, strlen( $curl_dataeck ) ) ) == $curl_dataeck ) {
+            foreach ( array( 'http://', 'https://', '//' ) as $curl_datacheck ) {
+                if ( strtolower( substr( $url, 0, strlen( $curl_datacheck ) ) ) == $curl_datacheck ) {
                     $valid_url = true;
                 }
             }
@@ -292,17 +292,38 @@ class SMVPE
     }
 
     /**
+     * Evaluates passed URL and makes sure that it's a valid resource
+     *
+     * @param string $url
+     * @return boolean
+     */
+    public function isValid( $url = '' ) {
+
+        if ( ! $url || trim( $url ) == '' ) {
+            return false;
+        }
+
+        $url = $this->validateURL( $url );
+
+        if ( $this->getSourceProvider( $url ) && $this->extractID( $url ) ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Evaluates the source and returns a single value string specifying
      * the site of origin
-     * 
-     * @param type $source 
+     *
+     * @param type $source
      * @return type
      */
     public function getSourceProvider( $source = null )
     {
         $source = ( $source === null ) ? $this->source : $source;
         $source = str_replace( '.', '', $source );
-        
+
         foreach ( $this->sites as $site => $data ) {
             if ( strpos( $source, $site ) !== false ) {
                 return $site;
@@ -310,12 +331,12 @@ class SMVPE
         }
 
         return false;
-    }    
+    }
 
     /**
      * Evaluates and parses parameters and return as a query string
-     * 
-     * @param string/array $params 
+     *
+     * @param string/array $params
      * @return string
      */
     protected function parseParameters( $params = null )
@@ -339,9 +360,9 @@ class SMVPE
      * Extracts video ID from source. $this->getSites() must contain
      * the anonymous function 'extract' in order to evaluate and parse
      * the source string.
-     * 
-     * @param string $source 
-     * @param string $site 
+     *
+     * @param string $source
+     * @param string $site
      * @return string
      */
     public function extractID( $source = null, $site = null )
@@ -363,10 +384,10 @@ class SMVPE
 
     /**
      * Inserts video ID from source by replacing {id} with actual extracted ID
-     * 
-     * @param string $subject 
-     * @param string $source 
-     * @param string $id 
+     *
+     * @param string $subject
+     * @param string $source
+     * @param string $id
      * @return string
      */
     protected function insertID( $id = '', $source = '' )
@@ -376,9 +397,10 @@ class SMVPE
 
     /**
      * Fetches and returns data associated with video
-     * 
-     * @param string $source 
-     * @param string $site 
+     * This is experimental and not supposed to ever be used
+     *
+     * @param string $source
+     * @param string $site
      * @return mixed
      */
     public function getData( $source = null, $site = null )
@@ -398,7 +420,7 @@ class SMVPE
             curl_setopt( $curl_data, CURLOPT_TIMEOUT, '3' );
 
             $data = curl_exec( $curl_data );
-            curl_close( $curl_data );            
+            curl_close( $curl_data );
 
             return $data;
         }
@@ -417,7 +439,12 @@ class SMVPE
         $embed_url  = '';
 
         if ( isset( $this->sites[$site] ) && $video_id = $this->extractID( $source ) ) {
+
             $embed_url = $this->insertID( $video_id, $this->sites[$site]['embed'] );
+
+            if ( $embed_url ) {
+                $embed_url .= $this->parseParameters();
+            }
         }
 
         return $embed_url;
@@ -425,8 +452,8 @@ class SMVPE
 
     /**
      * Gets the generated embed HTML code
-     * 
-     * @param string $source 
+     *
+     * @param string $source
      * @param string $site
      * @return string
      */
@@ -437,7 +464,7 @@ class SMVPE
         $output = '';
 
         if ( $embed_url = $this->getEmbedURL( $source, $site ) ) {
-            $output     = '<iframe src="' . $embed_url . $this->parseParameters() . '" width="' . $this->options['width'] . '" height="' . $this->options['height'] . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            $output     = '<iframe src="' . $embed_url . '" width="' . $this->options['width'] . '" height="' . $this->options['height'] . '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             $output     = sprintf( $this->options['container'], $output );
         }
 
@@ -446,9 +473,9 @@ class SMVPE
 
     /**
      * Outputs the generated embed code
-     * 
-     * @param string $source 
-     * @param string $site 
+     *
+     * @param string $source
+     * @param string $site
      * @return string
      */
     public function embed( $source = null, $site = null )
